@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:Title="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"
+          integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.min.js"
+            integrity="sha384-IDwe1+LCz02ROU9k972gdyvl+AESN10+x7tBKgc9I5HFtuNz0wWnPclzo6p9vxnk"
+            crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="">
+</head>
+<body>
+<div style="display: flex; justify-content: space-around;">
+    <div><a th:href="@{http://localhost:8080/products}"> Catalog </a></div>
+    <div><a th:href="@{http://localhost:8080/users}"> Users </a></div>
+    <div><a th:href="@{http://localhost:8080/logout}"> Exit </a></div>
+</div>
+<br>
+<div class="page" style="display: flex; justify-content: space-around;">
+    <div class="left">
+        <div class="heading"><h5>Customers</h5></div>
+        <table class="table table-striped" style="width:400px">
+            <tr>
+                <th>Name</th>
+                <th>Orders number</th>
+                <th>Delete</th>
+            </tr>
+            <tr th:each="user : ${customersList}">
+                <td th:text="${user.getUsername()}"></td>
+                <td th:text="${user.getOrders().size()}"></td>
+                <td>
+                    <form th:action="@{http://localhost:8080/users/delete/{id}(id = ${user.getId()})}" method="post">
+                        <button type="submit" class="btn btn-secondary btn-sm">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        </table>
+        <br>
+        <div class="heading"><h5>Employees</h5></div>
+        <table class="table table-striped" style="width:400px">
+            <tr>
+                <th>Name</th>
+                <th>Roles</th>
+                <th>Delete</th>
+            </tr>
+            <tr th:each="user : ${employeesList}">
+                <td th:text="${user.getUsername()}"></td>
+
+                <td>
+                    <table>
+                        <tr th:each="r : ${user.getRoles()}">
+                            <td th:text="${r.getName().substring(5)}" > </td>
+
+                    </table>
+                </td>
+
+                <td>
+                    <form th:action="@{http://localhost:8080/users/delete/{id}(id = ${user.getId()})}" method="post">
+                        <button type="submit" class="btn btn-secondary btn-sm">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="right">
+        <div>
+            <div class="heading"><h5>Add new user or add role</h5></div>
+            <form th:action="@{http://localhost:8080/users/add}" th:object="${user}" method="post">
+                <div class="mb-3">
+                    <label class="form-label">Name:</label>
+                    <input name="name" type="text" class="form-control input_size" style="width:150px">
+                    <label class="form-label">Password:</label>
+                    <input name="password" type="text" class="form-control input_size" style="width:150px">
+                    <label class="form-label">Role:</label>
+                    <input name="role" type="text" class="form-control input_size" style="width:150px">
+                </div>
+                <button type="submit" class="btn btn-secondary btn-lg">Send data</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

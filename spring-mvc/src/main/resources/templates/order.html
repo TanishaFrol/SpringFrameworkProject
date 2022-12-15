@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:Title="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"
+          integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.min.js"
+            integrity="sha384-IDwe1+LCz02ROU9k972gdyvl+AESN10+x7tBKgc9I5HFtuNz0wWnPclzo6p9vxnk"
+            crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="">
+</head>
+<body>
+<div style="display: flex; justify-content: space-around;">
+    <div> <a th:href="@{http://localhost:8080/order}"> Catalog </a> </div>
+    <div> <a th:href="@{http://localhost:8080/profile}"> Profile </a> </div>
+    <div> <a th:href="@{http://localhost:8080/logout}"> Exit </a> </div>
+</div>
+<br>
+<div class="page" style="display: flex; justify-content: space-around;">
+    <div class="left">
+        <div class="heading"><h1>Products available</h1></div>
+        <div class="heading"><h1>for addition</h1></div>
+        <div class="heading"><h3>Sort products: </h3></div>
+        <form th:action="@{http://localhost:8080/order}" method="get">
+            <div class="mb-3">
+                <label class="form-label">min price</label>
+                <input name="min" type="text" class="form-control input_size" style="width:150px">
+                <label class="form-label">max price</label>
+                <input name="max" type="text" class="form-control input_size" style="width:150px">
+                <label class="form-label">find by name</label>
+                <input name="titlePart" type="text" class="form-control input_size" style="width:150px">
+            </div>
+            <button type="submit" class="btn btn-secondary btn-lg">sort</button>
+        </form>
+        <br>
+        <table class="table table-striped" style="width:400px">
+            <tr>
+                <th>Title</th>
+                <th>Cost</th>
+                <th>Add to cart</th>
+            </tr>
+            <tr th:each="available : ${productList}">
+                <td th:text="${available.getTitle()}"></td>
+                <td th:text="${available.getCost()}"></td>
+                <td>
+                    <form th:action="@{http://localhost:8080/order/add/{id}(id = ${available.getId()})}" method="post">
+                        <button type="submit" class="btn btn-secondary btn-sm">Add</button>
+                    </form>
+                </td>
+            </tr>
+        </table>
+        <form th:action="@{http://localhost:8080/order}" method="get">
+            <div class="mb-3" style="display: flex;">
+                <div><label class="form-label">Show page:</label></div>
+                <div><input name="page" type="text" class="form-control input_size"
+                            style="width:50px; margin-left:10px; margin-right:10px;"></div>
+                <div>
+                    <button type="submit" class="btn btn-secondary btn-sm">show</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="right">
+        <div class="heading"><h1>Client's cart</h1></div>
+        <table class="table table-dark table-striped" style="width:400px">
+            <tr>
+                <th>Title</th>
+                <th>Cost</th>
+                <th>Remove from cart</th>
+            </tr>
+            <tr th:each="prod : ${productOfOrder}">
+                <td th:text="${prod.getTitle()}"></td>
+                <td th:text="${prod.getCost()}"></td>
+                <td>
+                    <form th:action="@{http://localhost:8080/order/delete/{id}(id = ${prod.getId()})}" method="post">
+                        <button type="submit" class="btn btn-secondary btn-sm">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        </table>
+        <br>
+        <h3> Total cost: <span th:text="${totalCost}"> </span></h3>
+        <br>
+        <form th:action="@{http://localhost:8080/order/placeOrder}" method="post">
+            <button type="submit" class="btn btn-secondary btn-lg">Place an order</button>
+        </form>
+    </div>
+</div>
+
+
+</body>
+</html>
